@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
-
+	  xmlns:th="http://www.thymeleaf.org">
 
 <th:block th:fragment="menu">
 	<!-- top navigation -->
@@ -13,7 +12,7 @@
 				</div>
 
 				<ul class="nav navbar-nav navbar-right">
-					
+
 					<li class="">
 						<a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown"aria-expanded="false" >
 							<span th:text="${session.loggedInUserName}"></span>

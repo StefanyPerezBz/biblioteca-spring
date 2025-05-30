@@ -2,48 +2,64 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Spark LMS - Login</title>
-	
-	<th:block th:replace="fragments/styles :: common"></th:block>
-	
+    <title>Spark LMS - Login</title>
+
+    <!-- <th:block th:replace="fragments/styles :: common"></th:block> -->
+
+    <!-- Bootstrap -->
+    <link th:href="@{/vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link th:href="@{/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link th:href="@{/custom/css/custom.min.css}" rel="stylesheet">
+    <link th:href="@{/custom/css/common.css}" rel="stylesheet">
+
+    <!-- Datatables -->
+    <link th:href="@{/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css}" rel="stylesheet">
+
 </head>
 <body class="login">
-    <div>
+<div>
 
-      <div class="login_wrapper">
-          <section class="login_content">
+    <div class="login_wrapper">
+        <section class="login_content">
             <form th:action="@{/login}" method="post" id="loginform">
-              <h1>Login Form</h1>
-              <div>
-                <input type="text" class="form-control" placeholder="Username" name="username" />
-              </div>
-              <div>
-                <input type="password" class="form-control" placeholder="Password" name="password" />
-              </div>
-              <div>
-                <a class="btn btn-default submit" href="javascript:void(0)" onclick="document.getElementById('loginform').submit();">Log in</a>
-              </div>
-
-              <div class="clearfix"></div>
-
-              <div class="separator">
+                <h1>Login Form</h1>
+                <div>
+                    <input type="text" class="form-control" placeholder="Username" name="username" />
+                </div>
+                <div>
+                    <input type="password" class="form-control" placeholder="Password" name="password" />
+                </div>
+                <div>
+                    <a class="btn btn-default submit" href="javascript:void(0)" onclick="document.getElementById('loginform').submit();">Log in</a>
+                </div>
 
                 <div class="clearfix"></div>
-                <br />
 
-                <div>
-                  <h1><i class="fa fa-paw"></i> Spark LMS</h1>
+                <div class="separator">
+
+                    <div class="clearfix"></div>
+                    <br />
+
+                    <div>
+                        <h1><i class="fa fa-paw"></i> Spark LMS</h1>
+                    </div>
                 </div>
-              </div>
             </form>
-          </section>
-        </div>
-      </div>
-      
-  </body>
+        </section>
+    </div>
+</div>
+
+</body>
 </html>

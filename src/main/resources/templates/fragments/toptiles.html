@@ -1,34 +1,33 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
-
+	  xmlns:th="http://www.thymeleaf.org">
 
 <th:block th:fragment="tiles">
 	<!-- top tiles start -->
 	<div class="row tile_count">
 		<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-			<span class="count_top "><i class="fa fa-user"></i>  Members</span>
-			<div class="count green" th:text="${topTiles.totalMembers}"></div>
+			<span class="count_top "><i class="fa fa-user"></i>  Usuarios</span>
+			<div class="count green" th:text="${topTiles.totalMiembros}"></div>
 		</div>
 		<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-			<span class="count_top "><i class="fa fa-user"></i>  Parents</span>
-			<div class="count" th:text="${topTiles.totalParents}"></div>
+			<span class="count_top "><i class="fa fa-user"></i>  Padres</span>
+			<div class="count" th:text="${topTiles.totalPadres}"></div>
 		</div>
 		<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-			<span class="count_top "><i class="fa fa-user"></i>  Students</span>
-			<div class="count" th:text="${topTiles.totalStudents}"></div>
+			<span class="count_top "><i class="fa fa-user"></i>  Estudiantes</span>
+			<div class="count" th:text="${topTiles.totalEstudiantes}"></div>
 		</div>
 		<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-			<span class="count_top"><i class="fa fa-sitemap"></i>  Categories</span>
-			<div class="count green" th:text="${topTiles.totalCategories}"></div>
+			<span class="count_top"><i class="fa fa-sitemap"></i>  Categorías</span>
+			<div class="count green" th:text="${topTiles.totalCategorias}"></div>
 		</div>
 		<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-			<span class="count_top "><i class="fa fa-book"></i>  Books</span>
-			<div class="count" th:text="${topTiles.totalBooks}"></div>
+			<span class="count_top "><i class="fa fa-book"></i>  Libros</span>
+			<div class="count" th:text="${topTiles.totalLibros}"></div>
 		</div>
 		<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-			<span class="count_top"><i class="fa fa-cart-arrow-down"></i> Books Issued</span>
-			<div class="count green" th:text="${topTiles.totalIssuedBooks}"></div>
+			<span class="count_top"><i class="fa fa-cart-arrow-down"></i> Libros prestados</span>
+			<div class="count green" th:text="${topTiles.totalLibrosPrestados}"></div>
 		</div>
 	</div>
 	<!-- top tiles end -->
