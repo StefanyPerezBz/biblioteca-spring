@@ -10,6 +10,9 @@
 	<title>Spark LMS - Member Form</title>
 
 	<th:block th:replace="fragments/styles :: common"></th:block>
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+	<!-- SweetAlert2 CDN -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 <body class="nav-md">
@@ -25,31 +28,38 @@
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<div class="x_panel">
 						<div class="x_title">
-							<h2 th:if="${member.id==null}">Add New Member</h2>
-							<h2 th:if="${member.id!=null}">Edit Member Data</h2>
+							<h2 th:if="${member.id==null}">Agregar Nuevo Usuario</h2>
+							<h2 th:if="${member.id!=null}">Editar Usuario</h2>
 							<div class="clearfix"></div>
 						</div>
 						<div class="x_content">
+
 							<div class="alert alert-success alert-dismissible fade in" role="alert" th:if="${successMsg}">
 								<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
 								<span th:text="*{successMsg}"></span>
 							</div>
+
 							<br />
-							<form id="member-form" th:action="@{/member/save}" method="post" th:object="${member}" class="form-horizontal form-label-left">
+							<form id="member-form"
+								  th:action="@{/member/save}"
+								  method="post"
+								  th:object="${member}"
+								  class="form-horizontal form-label-left"
+								  data-parsley-validate>
 
 								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12">Member Type <span class="required">*</span></label>
+									<label class="control-label col-md-3 col-sm-3 col-xs-12">Tipo <span class="required">*</span></label>
 									<div class="col-md-2 col-sm-2 col-xs-12">
-										<select th:field="*{type}" class="form-control">
+										<select th:field="*{type}" class="form-control js-example-basic-single" required="required">
 											<option th:each="mt : ${memberTypes}" th:value="${mt}" th:text="${mt}"></option>
 										</select>
 									</div>
 								</div>
 
 								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">First Name <span class="required">*</span></label>
+									<label class="control-label col-md-3 col-sm-3 col-xs-12">Primer nombre <span class="required">*</span></label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
-										<input type="text" th:field="*{firstName}" class="form-control col-md-7 col-xs-12">
+										<input type="text" th:field="*{firstName}" class="form-control col-md-7 col-xs-12" required data-parsley-required-message="Este campo es obligatorio.">
 									</div>
 									<div class="col-md-3 col-sm-3 col-xs-12 mt-5">
 										<span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
@@ -57,7 +67,7 @@
 								</div>
 
 								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Middle Name <span class="required">*</span></label>
+									<label class="control-label col-md-3 col-sm-3 col-xs-12" >Segundo nombre</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
 										<input type="text" th:field="*{middleName}" class="form-control col-md-7 col-xs-12">
 									</div>
@@ -67,9 +77,9 @@
 								</div>
 
 								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Last Name</label>
+									<label class="control-label col-md-3 col-sm-3 col-xs-12">Apellidos <span class="required">*</span></label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
-										<input type="text" th:field="*{lastName}" class="form-control col-md-7 col-xs-12">
+										<input type="text" th:field="*{lastName}" class="form-control col-md-7 col-xs-12" required data-parsley-required-message="Este campo es obligatorio.">
 									</div>
 									<div class="col-md-3 col-sm-3 col-xs-12 mt-5">
 										<span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
@@ -77,38 +87,41 @@
 								</div>
 
 								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12">Gender <span class="required">*</span></label>
+									<label class="control-label col-md-3 col-sm-3 col-xs-12">Género <span class="required">*</span></label>
 									<div class="col-md-2 col-sm-2 col-xs-12">
-										<select th:field="*{gender}" class="form-control">
-											<option th:value="'Male'" th:text="Male"></option>
-											<option th:value="'Female'" th:text="Female"></option>
+										<select th:field="*{gender}" class="form-control js-example-basic-single" required data-parsley-required-message="Este campo es obligatorio.">
+											<option th:value="'Male'" th:text="Masculino"></option>
+											<option th:value="'Female'" th:text="Femenino"></option>
 										</select>
 									</div>
 								</div>
 
 								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12">Date of Birth <span class="required">*</span></label>
+									<label for="dateOfBirth" class="control-label col-md-3 col-sm-3 col-xs-12">Fecha de nacimiento <span class="required">*</span></label>
 									<div class="col-md-2 col-sm-2 col-xs-12">
 
-										<input type="text" class="form-control" data-inputmask="'mask': '99-Aaa-9999'" name="dateOfBirth" id="dateOfBirth"
-											   th:value="${member.dateOfBirth}?${#dates.format(member.dateOfBirth, 'dd-MMM-yyyy')}:''" >
+										<input type="text" class="form-control"  data-inputmask="'alias': 'date', 'inputFormat': 'dd-MM-yyyy'"
+											   name="dateOfBirth" id="dateOfBirth"
+											   th:value="${member.dateOfBirth}?${#dates.format(member.dateOfBirth, 'dd-MM-yyyy')}:''" >
 										<span class="fa fa-calendar form-control-feedback right" aria-hidden="true"></span>
 									</div>
 									<div class="col-md-3 col-sm-3 col-xs-12 mt-5">
 										<span id="dobErr"></span>
 										<span th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></span>
+
+										<span id="dateError" class="text-red-600 text-sm" style="display:none;"></span>
 									</div>
 								</div>
 
 								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="contact">Contact # </label>
+									<label class="control-label col-md-3 col-sm-3 col-xs-12">Número de contacto </label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
 										<input type="text" th:field="*{contact}" class="form-control col-md-7 col-xs-12">
 									</div>
 								</div>
 
 								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12" for="contact">Email </label>
+									<label class="control-label col-md-3 col-sm-3 col-xs-12">Correo electrónico </label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
 										<input type="text" th:field="*{email}" class="form-control col-md-7 col-xs-12">
 									</div>
@@ -119,16 +132,31 @@
 								<input type="hidden" name="joiningDate" id="joiningDate" th:value="${member.joiningDate}?${#dates.format(member.joiningDate, 'dd-MMM-yyyy')}:${#dates.format(#dates.createNow(), 'dd-MMM-yyyy')}" />
 
 								<div class="ln_solid"></div>
-								<div class="form-group">
-									<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-										<th:block th:if="${id==null}">
-											<button class="btn btn-primary" type="reset">Reset</button>
-										</th:block>
-										<th:block th:if="${id!=null}">
-											<button class="btn btn-primary" type="button" id="gotoListBtn" >Go to list page</button>
-										</th:block>
-										<button type="button" class="btn btn-success" id="saveBtn">Save</button>
-									</div>
+
+								<div class="text-center mt-3">
+									<th:block th:if="${id == null}">
+										<button type="reset" class="btn btn-dark btn-md px-4 me-2">
+											Resetear
+										</button>
+									</th:block>
+
+									<th:block th:if="${id != null}">
+										<button type="button" class="btn btn-warning btn-md px-4 me-2" id="gotoListBtn">
+											Ir a la lista
+										</button>
+									</th:block>
+
+									<th:block th:if="${id == null}">
+										<button type="submit" class="btn btn-success btn-md px-4">
+											Guardar
+										</button>
+									</th:block>
+									<th:block th:if="${id != null}">
+										<button type="submit" class="btn btn-primary btn-md px-4">
+											Editar
+										</button>
+									</th:block>
+
 								</div>
 
 							</form>
@@ -148,5 +176,89 @@
 <!-- jquery.inputmask -->
 <script th:src="@{/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js}"></script>
 <script th:src="@{/custom/js/member/form.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/parsleyjs/dist/i18n/es.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/parsleyjs/dist/i18n/es.extra.js"></script>
+<script>
+	Parsley.setLocale('es');
+</script>
+
+<script>
+	$(document).ready(function() {
+		$('.js-example-basic-single').select2();
+	});
+</script>
+
+<script>
+	$(document).ready(function () {
+		$('#dateOfBirth').inputmask({
+			mask: '99-99-9999',
+			placeholder: 'dd-mm-aaaa',
+			showMaskOnHover: false,
+		});
+	});
+
+	function validateDate(input) {
+		const dateError = document.getElementById('dateError');
+		const value = input.value;
+
+		// Validar formato completo dd-mm-aaaa
+		const datePattern = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/;
+		if (!datePattern.test(value)) {
+			dateError.style.display = 'block';
+			dateError.textContent = 'Formato de fecha inválido (dd-mm-aaaa)';
+			input.setCustomValidity('Formato de fecha inválido');
+			return;
+		}
+
+		const [day, month, year] = value.split('-').map(Number);
+		const today = new Date();
+		const maxYear = today.getFullYear();
+
+		// Validar si el año es futuro
+		if (year > maxYear) {
+			dateError.style.display = 'block';
+			dateError.textContent = 'El año no puede ser mayor al actual';
+			input.setCustomValidity('Año inválido');
+			return;
+		}
+
+		// Validar existencia real de la fecha
+		const date = new Date(year, month - 1, day);
+		if (
+				date.getFullYear() !== year ||
+				date.getMonth() !== month - 1 ||
+				date.getDate() !== day
+		) {
+			dateError.style.display = 'block';
+			dateError.textContent = 'Fecha inválida. Revisa el día y mes.';
+			input.setCustomValidity('Fecha inexistente');
+			return;
+		}
+
+		// Todo válido
+		dateError.style.display = 'none';
+		input.setCustomValidity('');
+	}
+
+	document.getElementById('dateOfBirth').addEventListener('input', function (e) {
+		const value = e.target.value;
+
+		// Auto-insertar guiones
+		if ((value.length === 2 || value.length === 5) && value[value.length - 1] !== '-') {
+			e.target.value = value + '-';
+		}
+
+		validateDate(e.target);
+	});
+
+	// Validación final al perder el foco
+	document.getElementById('dateOfBirth').addEventListener('blur', function (e) {
+		validateDate(e.target);
+	});
+</script>
+
+
 </body>
 </html>

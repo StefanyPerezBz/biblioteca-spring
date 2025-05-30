@@ -49,6 +49,7 @@ public class Member implements Serializable {
 
 	@Column(name = "date_of_birth")
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	@NotNull(message = "La fecha de nacimiento es obligatoria.")
 	private Date dateOfBirth;
 
 	@Column(name = "joining_date")
