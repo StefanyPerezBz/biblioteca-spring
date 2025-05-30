@@ -4,28 +4,33 @@
 
 <th:block th:fragment="tiles">
 	<!-- top tiles start -->
+	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+		<div class="col">
+			<!-- contenido aquí -->
+		</div>
+	</div>
 	<div class="row tile_count">
-		<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+		<div class="col-sm-2 col-sm-4 col-xs-6 tile_stats_count">
 			<span class="count_top "><i class="fa fa-user"></i>  Usuarios</span>
 			<div class="count green" th:text="${topTiles.totalMiembros}"></div>
 		</div>
-		<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+		<div class="col-sm-2 col-sm-4 col-xs-6 tile_stats_count">
 			<span class="count_top "><i class="fa fa-user"></i>  Padres</span>
 			<div class="count" th:text="${topTiles.totalPadres}"></div>
 		</div>
-		<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+		<div class="col-sm-2 col-sm-4 col-xs-6 tile_stats_count">
 			<span class="count_top "><i class="fa fa-user"></i>  Estudiantes</span>
 			<div class="count" th:text="${topTiles.totalEstudiantes}"></div>
 		</div>
-		<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+		<div class="col-sm-2 col-sm-4 col-xs-6 tile_stats_count">
 			<span class="count_top"><i class="fa fa-sitemap"></i>  Categorías</span>
 			<div class="count green" th:text="${topTiles.totalCategorias}"></div>
 		</div>
-		<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+		<div class="col-sm-2 col-sm-4 col-xs-6 tile_stats_count">
 			<span class="count_top "><i class="fa fa-book"></i>  Libros</span>
 			<div class="count" th:text="${topTiles.totalLibros}"></div>
 		</div>
-		<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+		<div class="col-sm-2 col-sm-4 col-xs-6 tile_stats_count">
 			<span class="count_top"><i class="fa fa-cart-arrow-down"></i> Libros prestados</span>
 			<div class="count green" th:text="${topTiles.totalLibrosPrestados}"></div>
 		</div>

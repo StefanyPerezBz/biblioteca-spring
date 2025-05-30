@@ -31,6 +31,10 @@ public class MemberService {
 		return memberRepository.countByType(Constants.MIEMBRO_ESTUDIANTE);
 	}
 
+	public Long getTeachersCount() {
+		return memberRepository.countByType(Constants.MIEMBRO_DOCENTE);
+	}
+
 	public List<Member> getAll() {
 		return memberRepository.findAllByOrderByFirstNameAscMiddleNameAscLastNameAsc();
 	}

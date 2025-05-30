@@ -11,6 +11,7 @@ public class Constants {
 
 	public static final String MIEMBRO_PADRE = "Padre";
 	public static final String MIEMBRO_ESTUDIANTE = "Estudiante";
+	public static final String MIEMBRO_DOCENTE = "Profesor";
 	public static final String MIEMBRO_OTRO = "Otro";
 	public static final List<String> TIPOS_MIEMBROS = new ArrayList<String>() {{
 		add(MIEMBRO_PADRE);
