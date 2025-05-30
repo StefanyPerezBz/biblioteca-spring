@@ -1,5 +1,6 @@
 package com.spark.lms.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -25,29 +26,38 @@ public class BookController {
 
 	@Autowired
 	private BookService bookService;
-	
+
 	@Autowired
 	private CategoryService categoryService;
-	
+
 	@ModelAttribute(name = "categories")
 	public List<Category> categories() {
 		return categoryService.getAllBySort();
 	}
-	
+
 	@RequestMapping(value = {"", "/list"}, method = RequestMethod.GET)
 	public String showBooksPage(Model model) {
+
 		model.addAttribute("books", bookService.getAll());
 		return "/book/list";
 	}
-	
+
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String addBookPage(Model model) {
+		// Breadcrumb: Dashboard > Book
+		model.addAttribute("breadcrumb", Arrays.asList("Home"));
+		model.addAttribute("currentPage", "Agregar Libro");
+
 		model.addAttribute("book", new Book());
 		return "/book/form";
 	}
-	
+
 	@RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
-	public String editBookPage(@PathVariable(name = "id") Long id,  Model model) {
+	public String editBookPage(@PathVariable(name = "id") Long id, Model model) {
+
+		model.addAttribute("breadcrumb", Arrays.asList("Home"));
+		model.addAttribute("currentPage", "Editar Libro");
+
 		Book book = bookService.get(id);
 		if( book != null ) {
 			model.addAttribute("book", book);
@@ -56,29 +66,46 @@ public class BookController {
 			return "redirect:/book/add";
 		}
 	}
-	
+
+
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String saveBook(@Valid Book book, BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+	public String saveBook(@Valid Book book, BindingResult bindingResult, final RedirectAttributes redirectAttributes,
+						   Model model) {
+
 		if( bindingResult.hasErrors() ) {
 			return "/book/form";
 		}
-		
-		if( book.getId() == null ) {
-			if( bookService.getByTag(book.getTag()) != null ) {
-				bindingResult.rejectValue("tag", "tag", "Tag already exists");
-				return "/book/form";
-			} else {
+
+		try {
+			if(book.getId() == null) {
+				// Validación de etiqueta duplicada para nuevos libros
+
+				if(bookService.getByTag(book.getTag()) != null) {
+					bindingResult.rejectValue("tag", "duplicate.tag", "La etiqueta ya existe");
+					return "/book/form";
+				}
+
 				bookService.addNew(book);
-				redirectAttributes.addFlashAttribute("successMsg", "'" + book.getTitle() + "' is added as a new Book.");
+				redirectAttributes.addFlashAttribute("successMsg", "'" + book.getTitle() + "' se agregó como un nuevo libro.");
 				return "redirect:/book/add";
+			} else {
+				bookService.save(book);
+				redirectAttributes.addFlashAttribute("successMsg", "Los cambios para '" + book.getTitle() + "' se guardaron exitosamente.");
+				return "redirect:/book/edit/" + book.getId();
 			}
-		} else {
-			Book updatedBook = bookService.save(book);
-			redirectAttributes.addFlashAttribute("successMsg", "Changes for '" + book.getTitle() + "' are saved successfully. ");
-			return "redirect:/book/edit/"+updatedBook.getId();
+		} catch (Exception e) {
+			// Manejo de errores específicos
+			if (e.getMessage().contains("ISBN")) {
+				bindingResult.rejectValue("isbn", "duplicate.isbn", e.getMessage());
+			} else {
+				model.addAttribute("errorMsg", e.getMessage());
+			}
+
+			return "/book/form";
 		}
 	}
-	
+
+
 	@RequestMapping(value = "/remove/{id}", method = RequestMethod.GET)
 	public String removeBook(@PathVariable(name = "id") Long id, Model model) {
 		Book book = bookService.get( id );

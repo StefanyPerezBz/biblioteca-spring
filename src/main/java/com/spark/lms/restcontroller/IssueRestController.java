@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,103 +33,127 @@ public class IssueRestController {
 
 	@Autowired
 	private MemberService memberService;
-	
+
 	@Autowired
 	private BookService bookService;
-	
+
 	@Autowired
 	private IssueService issueService;
-	
+
 	@Autowired
 	private IssuedBookService issuedBookService;
-	
+
 	@RequestMapping(value="/save", method = RequestMethod.POST)
-	public String save(@RequestParam Map<String, String> payload) {
-		
-		String memberIdStr = (String)payload.get("member");
-		String[] bookIdsStr = payload.get("books").toString().split(",");
-		
-		Long memberId = null;
-		List<Long> bookIds = new ArrayList<Long>();
+	public ResponseEntity<String> save(@RequestParam Map<String, String> payload) {
 		try {
-			memberId = Long.parseLong( memberIdStr );
-			for(int k=0 ; k<bookIdsStr.length ; k++) {
-				bookIds.add( Long.parseLong(bookIdsStr[k]) );
+			String memberIdStr = payload.get("member");
+			String[] bookIdsStr = payload.get("books").toString().split(",");
+
+			Long memberId = null;
+			List<Long> bookIds = new ArrayList<>();
+			try {
+				memberId = Long.parseLong(memberIdStr);
+				for(String bookIdStr : bookIdsStr) {
+					bookIds.add(Long.parseLong(bookIdStr));
+				}
+			} catch (NumberFormatException ex) {
+				return ResponseEntity.badRequest().body("Formato de número no válido");
 			}
-		} catch (NumberFormatException ex) {
-			ex.printStackTrace();
-			return "invalid number format";
+
+			Member member = memberService.get(memberId);
+			if(member == null) {
+				return ResponseEntity.badRequest().body("Miembro no encontrado");
+			}
+
+			List<Book> books = bookService.get(bookIds);
+			if(books.isEmpty()) {
+				return ResponseEntity.badRequest().body("Libros no encontrados");
+			}
+
+			Issue issue = new Issue();
+			issue.setMember(member);
+			issue = issueService.addNew(issue);
+
+			for(Book book : books) {
+				book.setStatus(Constants.ESTADO_LIBRO_PRESTADO);
+				bookService.save(book);
+
+				IssuedBook ib = new IssuedBook();
+				ib.setBook(book);
+				ib.setIssue(issue);
+				issuedBookService.addNew(ib);
+			}
+
+			return ResponseEntity.ok("exitoso");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error al procesar la solicitud: " + e.getMessage());
 		}
-		
-		Member member = memberService.get( memberId );
-		List<Book> books = bookService.get(bookIds);
-		
-		Issue issue = new Issue();
-		issue.setMember(member);
-		issue = issueService.addNew(issue);
-		
-		for( int k=0 ; k<books.size() ; k++ ) {
-			Book book = books.get(k);
-			book.setStatus( Constants.BOOK_STATUS_ISSUED );
-			book = bookService.save(book);
-			
-			IssuedBook ib = new IssuedBook();
-			ib.setBook( book );
-			ib.setIssue( issue );
-			issuedBookService.addNew( ib );
-			
-		}
-		
-		return "success";
 	}
-	
+
 	@RequestMapping(value = "/{id}/return/all", method = RequestMethod.GET)
-	public String returnAll(@PathVariable(name = "id") Long id) {
-		Issue issue = issueService.get(id);
-		if( issue != null ) {
-			List<IssuedBook> issuedBooks = issue.getIssuedBooks();
-			for( int k=0 ; k<issuedBooks.size() ; k++ ) {
-				IssuedBook ib = issuedBooks.get(k);
-				ib.setReturned( Constants.BOOK_RETURNED );
-				issuedBookService.save( ib );
-				
+	public ResponseEntity<String> returnAll(@PathVariable(name = "id") Long id) {
+		try {
+			Issue issue = issueService.get(id);
+			if(issue == null) {
+				return ResponseEntity.badRequest().body("Préstamo no encontrado");
+			}
+
+			for(IssuedBook ib : issue.getIssuedBooks()) {
+				ib.setReturned(Constants.LIBRO_DEVUELTO);
+				issuedBookService.save(ib);
+
 				Book book = ib.getBook();
-				book.setStatus( Constants.BOOK_STATUS_AVAILABLE );
+				book.setStatus(Constants.ESTADO_LIBRO_DISPONIBLE);
 				bookService.save(book);
 			}
-			
-			issue.setReturned( Constants.BOOK_RETURNED );
+
+			issue.setReturned(Constants.LIBRO_DEVUELTO);
 			issueService.save(issue);
-			
-			return "successful";
-		} else {
-			return "unsuccessful";
+
+			return ResponseEntity.ok("exitoso");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error al devolver los libros: " + e.getMessage());
 		}
 	}
-	
+
 	@RequestMapping(value="/{id}/return", method = RequestMethod.POST)
-	public String returnSelected(@RequestParam Map<String, String> payload, @PathVariable(name = "id") Long id) {
-		Issue issue = issueService.get(id);
-		String[] issuedBookIds = payload.get("ids").split(",");
-		if( issue != null ) {
-			
-			List<IssuedBook> issuedBooks = issue.getIssuedBooks();
-			for( int k=0 ; k<issuedBooks.size() ; k++ ) {
-				IssuedBook ib = issuedBooks.get(k);
-				if( Arrays.asList(issuedBookIds).contains( ib.getId().toString() ) ) {
-					ib.setReturned( Constants.BOOK_RETURNED );
-					issuedBookService.save( ib );
-					
+	public ResponseEntity<String> returnSelected(@RequestParam Map<String, String> payload,
+												 @PathVariable(name = "id") Long id) {
+		try {
+			Issue issue = issueService.get(id);
+			if(issue == null) {
+				return ResponseEntity.badRequest().body("Préstamo no encontrado");
+			}
+
+			String[] issuedBookIds = payload.get("ids").split(",");
+			List<String> idsList = Arrays.asList(issuedBookIds);
+
+			for(IssuedBook ib : issue.getIssuedBooks()) {
+				if(idsList.contains(ib.getId().toString())) {
+					ib.setReturned(Constants.LIBRO_DEVUELTO);
+					issuedBookService.save(ib);
+
 					Book book = ib.getBook();
-					book.setStatus( Constants.BOOK_STATUS_AVAILABLE );
+					book.setStatus(Constants.ESTADO_LIBRO_DISPONIBLE);
 					bookService.save(book);
 				}
 			}
-			
-			return "successful";
-		} else {
-			return "unsuccessful";
+
+			return ResponseEntity.ok("exitoso");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error al devolver los libros seleccionados: " + e.getMessage());
 		}
+
 	}
-	
+
+	//
+	@RequestMapping(value="/available-books", method = RequestMethod.GET)
+	public ResponseEntity<List<Book>> getAvailableBooks() {
+		List<Book> availableBooks = bookService.getAvailableBooks();
+		return ResponseEntity.ok(availableBooks);
+	}
 }
+

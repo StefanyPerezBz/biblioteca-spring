@@ -19,25 +19,25 @@ public class BookRestController {
 
 	@Autowired
 	private BookService bookService;
-	
+
 	@Autowired
 	private CategoryService categoryService;
-	
+
 	@GetMapping(value = {"/", "/list"})
 	public List<Book> all() {
 		return bookService.getAll();
 	}
-	
+
 	@GetMapping(value = "/{id}/list")
 	public List<Book> get(@PathVariable(name = "id") Long id) {
 		Category category = categoryService.get(id);
 		return bookService.getByCategory( category );
 	}
-	
+
 	@GetMapping(value = "/{id}/available")
 	public List<Book> getAvailableBooks(@PathVariable(name = "id") Long id) {
 		Category category = categoryService.get(id);
 		return bookService.geAvailabletByCategory( category );
 	}
-	
+
 }

@@ -5,21 +5,23 @@ import java.util.List;
 
 public class Constants {
 
-	public static final String ROLE_ADMIN = "Admin";
-	public static final String ROLE_LIBRARIAN = "Librarian";
-	
-	public static final String MEMBER_PARENT = "Parent";
-	public static final String MEMBER_STUDENT = "Student";
-	public static final String MEMBER_OTHER = "Other";
-	public static final List<String> MEMBER_TYPES = new ArrayList<String>() {{
-	    add(MEMBER_PARENT);
-	    add(MEMBER_STUDENT);
-	    add(MEMBER_OTHER);
+
+	public static final String ROL_ADMIN = "Admin";
+	public static final String ROL_BIBLIOTECARIO = "Bibliotecario";
+
+	public static final String MIEMBRO_PADRE = "Padre";
+	public static final String MIEMBRO_ESTUDIANTE = "Estudiante";
+	public static final String MIEMBRO_OTRO = "Otro";
+	public static final List<String> TIPOS_MIEMBROS = new ArrayList<String>() {{
+		add(MIEMBRO_PADRE);
+		add(MIEMBRO_ESTUDIANTE);
+		add(MIEMBRO_OTRO);
 	}};
-	
-	public static final Integer BOOK_STATUS_AVAILABLE = 1;
-	public static final Integer BOOK_STATUS_ISSUED = 2;
-	
-	public static final Integer BOOK_NOT_RETURNED = 0;
-	public static final Integer BOOK_RETURNED = 1;
+
+	public static final Integer ESTADO_LIBRO_DISPONIBLE = 1;
+	public static final Integer ESTADO_LIBRO_PRESTADO = 2;
+
+	public static final Integer LIBRO_NO_DEVUELTO = 0;
+	public static final Integer LIBRO_DEVUELTO = 1;
+
 }

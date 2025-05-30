@@ -20,29 +20,30 @@ public class IssueController {
 
 	@Autowired
 	private IssueService issueService;
-	
+
 	@Autowired
 	private CategoryService categoryService;
-	
+
 	@ModelAttribute(name = "memberTypes")
 	public List<String> memberTypes() {
-		return Constants.MEMBER_TYPES;
+		return Constants.TIPOS_MIEMBROS;
 	}
-	
+
 	@ModelAttribute("categories")
 	public List<Category> getCategories() {
 		return categoryService.getAllBySort();
 	}
-	
+
 	@RequestMapping(value = {"/", "/list"}, method = RequestMethod.GET)
 	public String listIssuePage(Model model) {
 		model.addAttribute("issues", issueService.getAllUnreturned());
 		return "/issue/list";
 	}
-	
+
 	@RequestMapping(value = "/new", method = RequestMethod.GET)
-	public String newIssuePage(Model model) { 
+	public String newIssuePage(Model model) {
 		return "/issue/form";
 	}
-	
+
 }
+

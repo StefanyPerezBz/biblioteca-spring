@@ -3,73 +3,66 @@ package com.spark.lms.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Table(name = "member")
+@Table(name = "member", uniqueConstraints = @UniqueConstraint(
+		columnNames = {"first_name", "last_name"},
+		name = "uk_member_name"))
 public class Member implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
 	private Long id;
-	
-	@NotEmpty(message = "*Please select member type")
-	@NotNull(message = "*Please select member type")
+
+	@NotEmpty(message = "*Por favor seleccione el tipo de miembro")
+	@NotNull(message = "*Por favor seleccione el tipo de miembro")
 	@Column(name = "type")
 	private String type;
-	
-	@NotEmpty(message = "*Please enter fisrt name")
-	@NotNull(message = "*Please enter fisrt name")
+
+	@NotEmpty(message = "*Por favor ingrese su nombre")
+	@NotNull(message = "*Por favor ingrese su nombre")
 	@Column(name = "first_name")
 	private String firstName;
-	
-	@NotEmpty(message = "*Please enter middle name")
-	@NotNull(message = "*Please enter middle name")
+
+
 	@Column(name = "middle_name")
 	private String middleName;
-	
+
+	@NotEmpty(message = "*Por favor ingresa el apellido")
+	@NotNull(message = "*Por favor ingresa el apellido")
 	@Column(name = "last_name")
 	private String lastName;
-	
-	@NotEmpty(message = "*Please select gender")
-	@NotNull(message = "*Please select gender")
+
+	@NotEmpty(message = "*Por favor seleccione género")
+	@NotNull(message = "*Por favor seleccione género")
 	@Column(name = "gender")
 	private String gender;
-	
-	@NotNull(message = "*Please enter birth date")
+
 	@Column(name = "date_of_birth")
+	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	private Date dateOfBirth;
-	
+
 	@Column(name = "joining_date")
 	private Date joiningDate;
-	
+
 	@Column(name = "contact")
 	private String contact;
-	
+
 	@Column(name = "email")
 	private String email;
-	
+
+
 	public Member(@NotNull String type, @NotNull String firstName, @NotNull String middleName, @NotNull String lastName,
-			@NotNull String gender, @NotNull Date dateOfBirth, @NotNull Date joiningDate) {
+				  @NotNull String gender, @NotNull Date dateOfBirth, @NotNull Date joiningDate) {
 		super();
 		this.type = type;
 		this.firstName = firstName;
@@ -79,7 +72,7 @@ public class Member implements Serializable {
 		this.dateOfBirth = dateOfBirth;
 		this.joiningDate = joiningDate;
 	}
-	
+
 	public Member() {}
 
 	public Long getId() {
@@ -161,7 +154,6 @@ public class Member implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	
-	
+
 }
+

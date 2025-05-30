@@ -15,26 +15,27 @@ public class IssuedBookService {
 
 	@Autowired
 	private IssuedBookRepository issuedBookRepository;
-	
+
 	public List<IssuedBook> getAll() {
 		return issuedBookRepository.findAll();
 	}
-	
+
 	public IssuedBook get(Long id) {
 		return issuedBookRepository.findById(id).get();
 	}
-	
+
 	public Long getCountByBook(Book book) {
-		return issuedBookRepository.countByBookAndReturned(book, Constants.BOOK_NOT_RETURNED);
+		return issuedBookRepository.countByBookAndReturned(book, Constants.LIBRO_NO_DEVUELTO);
 	}
-	
+
 	public IssuedBook save(IssuedBook issuedBook) {
 		return issuedBookRepository.save(issuedBook);
 	}
-	
+
 	public IssuedBook addNew(IssuedBook issuedBook) {
-		issuedBook.setReturned( Constants.BOOK_NOT_RETURNED );
+		issuedBook.setReturned( Constants.LIBRO_NO_DEVUELTO );
 		return issuedBookRepository.save(issuedBook);
 	}
 
 }
+

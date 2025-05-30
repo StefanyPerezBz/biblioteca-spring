@@ -16,10 +16,10 @@ public class MemberRestController {
 
 	@Autowired
 	private MemberService memberService;
-	
+
 	@GetMapping(value = {"/", "/list"})
 	public List<Member> all() {
 		return memberService.getAll();
 	}
-	
+
 }

@@ -13,11 +13,11 @@ public class HomeController {
 
 	@Autowired
 	HomeService homeService;
-	
+
 	@RequestMapping(value = {"/", "/home"}, method = RequestMethod.GET)
 	public String homePage(Model model) {
 		model.addAttribute("topTiles", homeService.getTopTilesMap());
 		return "home";
-	}	
-	
+	}
+
 }
